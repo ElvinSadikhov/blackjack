@@ -25,10 +25,66 @@ def shuffle(cards):
         cards[i],cards[new]=cards[new],cards[i]
     return cards
 
+def cardPower(card,aim,temp=0):
+    power=0
+    if aim=="first":
+        if card[:2]=="10":
+            power+=10
+        elif card[0].isdigit():
+            power+=int(card[0])
+        elif card[0] in ["J","Q","K"]:
+            power+=10
+        else:#A
+            power+=11
+    elif aim=="hit":
+        if card[:2]=="10":
+            power+=10
+        elif card[0].isdigit():
+            power+=int(card[0])
+        elif card[0] in ["J","Q","K"]:
+            power+=10
+        else:#A
+            if temp>=21:
+                power+=1
+            else:
+                power+=11
+    return power
+def player(cards,aim,power=0):
+    if aim=="first":
+        card1p=cards.pop()
+        card2p=cards.pop()
+        power+=cardPower(card1p,aim)
+        power+=cardPower(card2p,aim)
+    elif aim=="hit":
+        card3p=cards.pop()
+        power+=cardPower(card3p,aim,power)
+    if aim=="first":
+        return power,card1p,card2p
+    #aim="hit"
+    return power,card3p
+
+def dealer(cards,aim,power=0):
+    if aim=="first":
+        card1d=cards.pop()
+        card2d=cards.pop()
+        power+=cardPower(card1d,aim)
+        power+=cardPower(card2d,aim)
+    elif aim=="hit":
+        card3d=cards.pop()
+        power+=cardPower(card3d,aim,power)###
+    if aim=="first":
+        return power,card1d,card2d
+    #aim="hit"
+    return power,card3d
+
 def main():
-    print("Shuffled cards:")
-    for i in shuffle(createDesk()):
-        print(i)
-        
+    cards=shuffle(createDesk())
+    a=player(cards,"first")
+    b=dealer(cards,"first")
+    print(a,a[0])
+    print(b,b[0])
+    print(player(cards,"hit",a[0]))
+    print(dealer(cards,"hit",b[0]))
+    print(len(cards))
 if __name__=="__main__":
     main()
