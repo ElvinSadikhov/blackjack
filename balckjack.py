@@ -44,7 +44,7 @@ def cardPower(card,aim,temp=0):
         elif card[0] in ["J","Q","K"]:
             power+=10
         else:#A
-            if temp>=21:
+            if temp+11>21:
                 power+=1
             else:
                 power+=11
@@ -77,14 +77,70 @@ def dealer(cards,aim,power=0):
     #aim="hit"
     return power,card3d
 
+def playerTurn(cards,power):
+    total=power
+    while True:
+        play=input("Would you like to 'hit' or 'stay'?").strip().lower()
+        if play!="hit" and play!="stay":
+            continue
+        if play=="hit":
+            total,newcard=player(cards,'hit',total)
+            if total>21:
+                print(f"\nYou got {newcard} and your total is {total} which is more than 21!\n\nYOU LOST!")
+                exit()###
+            elif total==21:
+                print(f"\nYou got {newcard} and your total is 21!(BLACKJACK)")
+                return total               
+            else:
+                print(f"\nYou got {newcard} and your total is {total}")
+        else:#stay
+            return total            
+            
+def dealerTurn(cards,power,z):
+    print(f"\nOkat, it's dealer's turn.\nHis hidden card was {z}.\nHis total was {power}.\n")
+    total=power
+    if power>21:
+        print("YOU WIN!")
+        exit()#
+    if power>=17:
+        return total
+    while True:
+        total,newcard=dealer(cards,'hit',total)
+        print(f"Dealer chooses to hit.\nHe draws {newcard}.\nHis total is {total}\n")
+        if total>21:
+            print("YOU WIN!")
+            exit()#
+        if total>=17:
+            print("Dealer stays.")
+            break
+        
+    return total
+        
 def main():
     cards=shuffle(createDesk())
-    a=player(cards,"first")
-    b=dealer(cards,"first")
-    print(a,a[0])
-    print(b,b[0])
-    print(player(cards,"hit",a[0]))
-    print(dealer(cards,"hit",b[0]))
-    print(len(cards))
+    a,b,c=player(cards,'first')
+    print("Welcome to Elvin's blackjack program!\n")
+    print(f"You got {b} and {c}\n\
+Your total is {a}\n")
+    if a==21:
+        print("You got BLACKJACK!")
+    x,y,z=dealer(cards,'first')
+    print(f"The dealer has a {y} showing and a hidden card.\n\
+His total is hidden, too.\n")
+    if a>21:
+        print("\nYOU LOST!")
+        exit()
+    if a==21 and x==21:
+        print(f"\nDealer's hidden card was {z} and he also got BLACKJACK!\nYOU LOST!")
+        exit()
+    totalofPlayer=playerTurn(cards,a)
+    totalofDealer=dealerTurn(cards,x,z)    
+    print(f"\nDealer's total is {totalofDealer}.\nYour total is {totalofPlayer}.")
+    #if totalofDealer>21 or totalofPlayer>21:
+    if totalofDealer>=totalofPlayer :
+        print("YOU LOST!")
+    else:
+        print("YOU WIN!")
+        
 if __name__=="__main__":
     main()
