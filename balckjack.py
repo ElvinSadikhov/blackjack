@@ -126,11 +126,11 @@ def dealerTurn(cards,power,z,checkforA):
             print(f"Okay, it's dealer's turn.\nHis hidden card was {z}.\nHe got BLACKJACK!(21).\n")
             sleep(1)
             return total
+        temp=power-10
         if total>=17 and total<22:
             print(f"\nOkay, it's dealer's turn.\nHis hidden card was {z}.\nHis total was {temp}/{power}.\n")
             sleep(1)
             return total
-        temp=power-10
         print(f"\nOkay, it's dealer's turn.\nHis hidden card was {z}.\nHis total was {temp}/{power}.\n")
         sleep(0.5)
         if total>=17:
